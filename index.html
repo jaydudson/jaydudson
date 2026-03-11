@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Jay Dudson | AI Systems & Automation</title>
+<meta name="description" content="AI systems, lateral thinking & problem solving.">
+
+<meta property="og:title" content="Jay Dudson | AI Systems & Automation">
+<meta property="og:description" content="Designing practical AI systems and automation tools.">
+<meta property="og:type" content="website">
+
+<script>document.documentElement.classList.add('dark')</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+darkMode:'class',
+theme:{
+extend:{
+fontFamily:{
+sans:['Inter','sans-serif']
+}
+}
+}
+}
+</script>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+
+/* ---------- Layout ---------- */
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:#09090b;
+}
+
+/* ---------- Typography ---------- */
+
+.hero-title{
+font-size:clamp(2.8rem,6vw,4.8rem);
+line-height:1.05;
+background:linear-gradient(90deg,#ffffff 0%,#a1a1aa 35%,#ffffff 55%,#a1a1aa 80%,#ffffff 100%);
+background-size:250% auto;
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+background-clip:text;
+}
+
+@keyframes shimmer{
+0%{background-position:200% center}
+100%{background-position:-200% center}
+}
+
+@media(prefers-reduced-motion:no-preference){
+.hero-title{
+animation:shimmer 7s linear infinite;
+}
+}
+
+.hero-sub{
+font-size:clamp(1rem,1.5vw,1.25rem);
+}
+
+/* ---------- Reveal Animation ---------- */
+
+.reveal{
+opacity:0;
+transform:translateY(50px);
+transition:all 1s cubic-bezier(.16,1,.3,1);
+}
+
+.reveal.active{
+opacity:1;
+transform:translateY(0);
+}
+
+/* ---------- Hero Background Effects ---------- */
+
+.hero-glow{
+position:absolute;
+top:-150px;
+left:-150px;
+width:700px;
+height:700px;
+background:radial-gradient(circle, rgba(255,255,255,0.06), transparent 70%);
+filter:blur(100px);
+pointer-events:none;
+}
+
+.hero-glow-2{
+position:absolute;
+bottom:-150px;
+right:-150px;
+width:600px;
+height:600px;
+background:radial-gradient(circle, rgba(255,255,255,0.04), transparent 70%);
+filter:blur(110px);
+pointer-events:none;
+}
+
+/* ---------- Floating Ambient Orbs ---------- */
+
+@keyframes float-a{
+0%,100%{transform:translate(0,0) scale(1)}
+33%{transform:translate(30px,-20px) scale(1.05)}
+66%{transform:translate(-20px,15px) scale(0.97)}
+}
+
+@keyframes float-b{
+0%,100%{transform:translate(0,0) scale(1)}
+33%{transform:translate(-25px,20px) scale(1.03)}
+66%{transform:translate(20px,-15px) scale(0.98)}
+}
+
+@keyframes float-c{
+0%,100%{transform:translate(0,0)}
+50%{transform:translate(15px,25px)}
+}
+
+.orb{
+position:fixed;
+border-radius:50%;
+pointer-events:none;
+z-index:0;
+filter:blur(90px);
+}
+
+.orb-1{
+width:450px;
+height:450px;
+background:radial-gradient(circle,rgba(255,255,255,0.022),transparent 70%);
+top:8%;
+left:3%;
+}
+
+.orb-2{
+width:350px;
+height:350px;
+background:radial-gradient(circle,rgba(120,120,200,0.028),transparent 70%);
+top:45%;
+right:8%;
+}
+
+.orb-3{
+width:400px;
+height:400px;
+background:radial-gradient(circle,rgba(200,200,255,0.018),transparent 70%);
+bottom:12%;
+left:28%;
+}
+
+@media(prefers-reduced-motion:no-preference){
+.orb-1{animation:float-a 24s ease-in-out infinite}
+.orb-2{animation:float-b 30s ease-in-out infinite}
+.orb-3{animation:float-c 20s ease-in-out infinite}
+}
+
+/* ---------- Grain texture ---------- */
+
+.grain{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
+pointer-events:none;
+z-index:40;
+}
+
+/* ---------- Bento Cards ---------- */
+
+.bento{
+transition:transform .35s cubic-bezier(.16,1,.3,1), border-color .35s ease, background .35s ease, box-shadow .35s ease;
+position:relative;
+overflow:hidden;
+cursor:default;
+}
+
+.bento::after{
+content:'';
+position:absolute;
+inset:-1px;
+border-radius:inherit;
+background:linear-gradient(135deg,rgba(255,255,255,0),rgba(255,255,255,0));
+opacity:0;
+transition:opacity .4s ease;
+pointer-events:none;
+z-index:-1;
+}
+
+.bento:hover::after{
+opacity:1;
+background:linear-gradient(135deg,rgba(255,255,255,0.07),rgba(160,160,255,0.04),transparent 60%);
+}
+
+.bento:hover{
+transform:translateY(-8px) scale(1.02);
+border-color:#3f3f46;
+background:#0c0c0f;
+box-shadow:0 0 30px rgba(255,255,255,0.03), 0 20px 40px rgba(0,0,0,.5);
+}
+
+/* ---------- Navigation ---------- */
+
+.nav{
+position:fixed;
+top:0;
+left:0;
+right:0;
+backdrop-filter:blur(14px);
+background:rgba(9,9,11,.55);
+border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.nav-link{
+position:relative;
+}
+
+.nav-link::after{
+content:'';
+position:absolute;
+bottom:-2px;
+left:0;
+right:0;
+height:1px;
+background:rgba(255,255,255,0.6);
+transform:scaleX(0);
+transform-origin:left center;
+transition:transform .25s cubic-bezier(.16,1,.3,1);
+}
+
+.nav-link:hover::after{
+transform:scaleX(1);
+}
+
+/* ---------- Profile Image ---------- */
+
+.profile-wrapper{
+width:260px;
+height:260px;
+perspective:900px;
+}
+
+.profile-img{
+width:260px;
+height:260px;
+border-radius:50%;
+object-fit:cover;
+border:1px solid #27272a;
+box-shadow:0 25px 70px rgba(0,0,0,.65);
+transition:all .4s ease;
+transform-style:preserve-3d;
+}
+
+.profile-img:hover{
+transform:scale(1.05);
+}
+
+/* ---------- Contact Buttons ---------- */
+
+.contact-btn{
+display:inline-flex;
+align-items:center;
+gap:0.5rem;
+border:1px solid #27272a;
+padding:0.75rem 1.25rem;
+font-size:0.875rem;
+color:#a1a1aa;
+text-decoration:none;
+transition:border-color .25s ease, color .25s ease, background .25s ease;
+cursor:pointer;
+white-space:nowrap;
+}
+
+.contact-btn:hover{
+border-color:#52525b;
+color:#ffffff;
+background:rgba(255,255,255,0.03);
+}
+
+/* ---------- Testimonial Cards ---------- */
+
+.testimonial-card{
+position:relative;
+border:1px solid #1c1c22;
+padding:2.5rem 2rem 2rem;
+transition:transform .35s cubic-bezier(.16,1,.3,1), border-color .35s ease, box-shadow .35s ease;
+background:#0a0a0d;
+overflow:hidden;
+}
+
+.testimonial-card::before{
+content:'\201C';
+position:absolute;
+top:-1rem;
+left:1.25rem;
+font-size:7rem;
+line-height:1;
+color:rgba(255,255,255,0.035);
+font-family:Georgia,serif;
+pointer-events:none;
+user-select:none;
+}
+
+.testimonial-card:hover{
+transform:translateY(-6px);
+border-color:#3f3f46;
+box-shadow:0 0 40px rgba(255,255,255,0.025), 0 24px 60px rgba(0,0,0,.55);
+}
+
+/* ---------- Experience entries ---------- */
+
+.exp-entry{
+border-left:1px solid #27272a;
+padding-left:1.5rem;
+transition:border-color .3s ease;
+}
+
+.exp-entry:hover{
+border-color:#52525b;
+}
+
+/* ---------- Experience entry numbers ---------- */
+
+.exp-num{
+display:block;
+font-size:0.6rem;
+letter-spacing:0.18em;
+color:#3f3f46;
+margin-bottom:0.4rem;
+font-variant-numeric:tabular-nums;
+}
+
+/* ---------- Scroll progress bar ---------- */
+
+#progress-bar{
+position:fixed;
+top:0;
+left:0;
+height:1px;
+width:0%;
+background:linear-gradient(90deg,rgba(255,255,255,0.15),rgba(255,255,255,0.6),rgba(255,255,255,0.15));
+z-index:200;
+pointer-events:none;
+}
+
+/* ---------- Cursor glow spotlight ---------- */
+
+#cursor-glow{
+position:fixed;
+width:640px;
+height:640px;
+border-radius:50%;
+background:radial-gradient(circle,rgba(255,255,255,0.032) 0%,transparent 65%);
+pointer-events:none;
+z-index:1;
+transform:translate(-50%,-50%);
+opacity:0;
+transition:opacity .6s ease;
+will-change:left,top;
+}
+
+/* ---------- Active nav state ---------- */
+
+.nav-link.nav-active{
+color:#ffffff;
+}
+
+/* ---------- Hero entrance (on load) ---------- */
+
+@media(prefers-reduced-motion:no-preference){
+.hero-enter{
+opacity:0;
+transform:translateY(20px);
+transition:opacity .85s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1);
+}
+.hero-enter.loaded{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+</style>
+
+<script type="application/ld+json">
+{
+"@context":"https://schema.org",
+"@type":"Person",
+"name":"Jay Dudson",
+"jobTitle":"AI Systems Designer",
+"url":"https://jaydudson.com",
+"sameAs":["https://linkedin.com/in/jaydudson"],
+"knowsAbout":[
+"Artificial Intelligence",
+"Automation",
+"LLMs",
+"AI Systems",
+"Data Analysis",
+"GRC Technology",
+"Risk Management"
+]
+}
+</script>
+
+</head>
+
+<body class="text-gray-300 font-sans antialiased">
+
+<div id="progress-bar"></div>
+<div id="cursor-glow"></div>
+<div class="grain"></div>
+
+<!-- Ambient orbs -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- NAVIGATION -->
+
+<header class="nav fixed top-0 left-0 right-0 w-full z-50">
+
+<div class="max-w-5xl mx-auto px-8 md:px-16 flex justify-between items-center h-16">
+
+<span class="text-white text-sm tracking-wide">Jay Dudson</span>
+
+<nav class="hidden sm:flex gap-6 text-sm text-gray-400">
+<a href="#skills" data-section="skills" class="nav-link hover:text-white transition">Skills</a>
+<a href="#experience" data-section="experience" class="nav-link hover:text-white transition">Experience</a>
+<a href="#testimonials" data-section="testimonials" class="nav-link hover:text-white transition">Testimonials</a>
+<a href="#" class="nav-link hover:text-white transition" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Contact</a>
+</nav>
+
+<!-- Mobile nav scroll-to-top button -->
+<button class="sm:hidden text-gray-400 hover:text-white transition p-2 -mr-2" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Scroll to top">
+<i data-lucide="chevrons-up"></i>
+</button>
+
+</div>
+
+</header>
+
+
+<div class="max-w-5xl mx-auto px-8 md:px-16 pt-32 relative">
+
+<!-- HERO -->
+
+<section class="relative py-32 grid md:grid-cols-2 items-start gap-16">
+
+<div>
+
+<h1 class="hero-title font-light tracking-tight relative z-10 hero-enter">
+Jay Dudson
+</h1>
+
+<p class="hero-sub text-gray-400 mt-6 max-w-xl relative z-10 hero-enter">
+AI systems, automation workflows, and analytical problem solving.
+Building practical tools that augment human intelligence.
+</p>
+
+<div class="flex gap-3 mt-10 relative z-10 hero-enter">
+
+<a href="https://www.linkedin.com/in/jaydudson/" target="_blank" rel="noopener noreferrer" class="contact-btn">
+<i data-lucide="linkedin"></i>
+LinkedIn
+</a>
+
+<a href="mailto:jddbtc@gmail.com?subject=Jay%20Dudson" class="contact-btn">
+<i data-lucide="mail"></i>
+Email
+</a>
+
+<a href="tel:0420448668" class="contact-btn">
+<i data-lucide="phone"></i>
+0420 448 668
+</a>
+
+</div>
+
+</div>
+
+<div class="flex justify-center md:justify-end pt-2">
+
+<div class="profile-wrapper">
+<img src="profile.jpg" alt="Jay Dudson" id="portrait" class="profile-img">
+</div>
+
+</div>
+
+<div class="hero-glow" id="glow"></div>
+<div class="hero-glow-2" id="glow2"></div>
+
+</section>
+
+
+<!-- STATEMENT -->
+
+<section class="py-24 border-t border-slate-900 reveal">
+
+<p class="text-3xl md:text-4xl font-light text-white leading-relaxed">
+I design AI systems that turn complex problems into elegant workflows.
+</p>
+
+<p class="mt-6 text-gray-400 max-w-2xl">
+My work combines large language models, automation pipelines, and analytical thinking to create tools that meaningfully improve productivity and decision making.
+</p>
+
+</section>
+
+
+<!-- SKILLS -->
+
+<section id="skills" class="py-24 border-t border-slate-900 reveal">
+
+<h2 class="text-sm uppercase tracking-widest text-gray-500 mb-12">
+Skills
+</h2>
+
+<div class="grid md:grid-cols-3 gap-6" id="skills-grid">
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">LLM Systems</h3>
+<p class="text-gray-400 text-sm">
+Prompt engineering, reasoning chains, structured outputs, and multi-step AI workflow design.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">Agentic AI</h3>
+<p class="text-gray-400 text-sm">
+Building autonomous AI agents, tool-use pipelines, and multi-agent orchestration systems.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">AI Automation</h3>
+<p class="text-gray-400 text-sm">
+End-to-end automation pipelines, system integrations, and AI-driven workflow orchestration.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">AI Architecture</h3>
+<p class="text-gray-400 text-sm">
+Designing scalable AI systems, reasoning frameworks, and production-ready deployment patterns.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">Data Intelligence</h3>
+<p class="text-gray-400 text-sm">
+Translating raw and heterogeneous data into clear, actionable insights using AI-assisted analytical tooling.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">Platform Integration</h3>
+<p class="text-gray-400 text-sm">
+Enterprise GRC platforms, regulatory content integrations, and API-driven workflow connections across complex systems.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">Risk & Compliance</h3>
+<p class="text-gray-400 text-sm">
+GRC technology, regulatory frameworks, and risk platform implementation across highly regulated industries.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">Process Optimisation</h3>
+<p class="text-gray-400 text-sm">
+Eliminating inefficiency through first-principles thinking and AI-augmented process redesign.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">Digital Transformation</h3>
+<p class="text-gray-400 text-sm">
+Leading technology change across complex, multi-stakeholder enterprise environments.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">Stakeholder Management</h3>
+<p class="text-gray-400 text-sm">
+Translating complex technical concepts for C-suite, executive, business, and regulatory audiences.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">Commercial Acumen</h3>
+<p class="text-gray-400 text-sm">
+Connecting technology capability to business value, commercial outcomes, and strategic partnerships.
+</p>
+</div>
+
+<div class="bento border border-slate-900 p-8">
+<h3 class="text-white text-lg mb-3">Strategic Problem Solving</h3>
+<p class="text-gray-400 text-sm">
+Lateral, resourceful thinking applied to ambiguous, high-stakes business and technology challenges.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- EXPERIENCE -->
+
+<section id="experience" class="py-24 border-t border-slate-900 reveal">
+
+<h2 class="text-sm uppercase tracking-widest text-gray-500 mb-12">
+Experience
+</h2>
+
+<div class="space-y-10">
+
+<div class="exp-entry">
+<span class="exp-num">01</span>
+<h3 class="text-white">AI Systems & Automation Development</h3>
+<p class="text-gray-500 text-sm mt-1">Independent Projects &nbsp;|&nbsp; 2025 - present</p>
+<p class="text-gray-400 text-sm mt-3 max-w-xl">
+Designing and building practical AI tools, autonomous agent systems, and automation pipelines focused on measurable real-world productivity gains. Daily applied use across the full Claude ecosystem - agentic workflows, tool use, MCP integrations, and multi-agent orchestration. Self-directed practitioner operating at the leading edge.
+</p>
+</div>
+
+<div class="exp-entry">
+<span class="exp-num">02</span>
+<h3 class="text-white">Solution Design & Architecture</h3>
+<p class="text-gray-500 text-sm mt-1">Enterprise & Regulated Sectors</p>
+<p class="text-gray-400 text-sm mt-3 max-w-xl">
+End-to-end solution design across complex GRC and data environments - from business requirements through to technical specifications and delivery. Applied First Principles and human-centred design to produce pragmatic, commercially viable solutions. Deep experience bridging business intent and technical execution at enterprise scale.
+</p>
+</div>
+
+<div class="exp-entry">
+<span class="exp-num">03</span>
+<h3 class="text-white">GRC Risk Technology & Regulatory Compliance</h3>
+<p class="text-gray-500 text-sm mt-1">Financial Services & Insurance</p>
+<p class="text-gray-400 text-sm mt-3 max-w-xl">
+Deep SME across GRC platform implementation - IBM OpenPages, RSA Archer, ReadiNow - spanning design, build, deployment, and BAU. Broad regulatory compliance experience including APRA obligations, Enforceable Undertakings, and Breach Reporting Law Reform. Recognised for translating complex risk frameworks into practical, user-focused system designs.
+</p>
+</div>
+
+<div class="exp-entry">
+<span class="exp-num">04</span>
+<h3 class="text-white">Data Intelligence & Governance</h3>
+<p class="text-gray-500 text-sm mt-1">Enterprise Data Environments</p>
+<p class="text-gray-400 text-sm mt-3 max-w-xl">
+Designed and delivered real-time dynamic data assets, foundational data platforms, and downstream consumption frameworks at enterprise scale. Strong data governance practice covering lineage, semantics, stewardship, and quality management. Hands-on SQL and PL/SQL interrogation paired with Power BI, Cognos, and Tableau for insight delivery. Blended heterogeneous data sources to surface previously invisible risk signals.
+</p>
+</div>
+
+<div class="exp-entry">
+<span class="exp-num">05</span>
+<h3 class="text-white">Risk Reporting & Behavioural Analytics</h3>
+<p class="text-gray-500 text-sm mt-1">Group Risk Functions</p>
+<p class="text-gray-400 text-sm mt-3 max-w-xl">
+Built executive-level dashboards and insight tools combining risk, operational, and HR data to reveal deeper signals. Developed behavioural analytics to understand how risk users engaged with platforms - driving UX improvements and licensing optimisation. Delivered longitudinal and cohort analysis frameworks for Group Risk leadership.
+</p>
+</div>
+
+<div class="exp-entry">
+<span class="exp-num">06</span>
+<h3 class="text-white">Stakeholder Management & Strategic Delivery</h3>
+<p class="text-gray-500 text-sm mt-1">C-Suite, Board & Cross-Functional Teams</p>
+<p class="text-gray-400 text-sm mt-3 max-w-xl">
+Senior stakeholder engagement across C-suite, CRO, board, and cross-functional teams in complex, multi-jurisdictional environments. Managed vendor selection, RFP processes, and accountability frameworks. Proven track record translating technical complexity into clear business narratives and driving adoption across diverse organisational audiences.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- TESTIMONIALS -->
+
+<section id="testimonials" class="py-24 border-t border-slate-900 reveal">
+
+<h2 class="text-sm uppercase tracking-widest text-gray-500 mb-12">
+Testimonials
+</h2>
+
+<div class="grid md:grid-cols-2 gap-6">
+
+<div class="testimonial-card">
+<blockquote class="text-gray-300 text-sm italic leading-relaxed relative z-10">
+"Jay is one of those rare people with great consulting skills, that can simplify complex subject matter and technical concepts, so that they can be easily understood by the lay person. His deep business knowledge of Risk Platforms - particularly OpenPages - coupled with overall technical prowess, make Jay an absolutely core SME in an ever-tightening regulatory landscape. He is a fantastic team player and all round great guy. Would recommend Jay to anyone."
+</blockquote>
+<div class="mt-6 pt-5 border-t border-slate-800">
+<p class="text-white text-sm font-medium">Christopher Hughes</p>
+<p class="text-gray-500 text-xs mt-1">Program Manager, iCare Workers Compensation Transformation</p>
+<p class="text-gray-600 text-xs mt-1">October 2021 - managed Jay directly</p>
+</div>
+</div>
+
+<div class="testimonial-card">
+<blockquote class="text-gray-300 text-sm italic leading-relaxed relative z-10">
+"It was a pleasure working with Jay and leveraging his knowledge in GRC space to expand our product offering and base solutions. During Jay's contract engagement, he successfully managed to partner with a strategic content provider LexisNexis and build an integration. This significantly increased the value proposition of our technology compliance offering. Jay's risk and compliance domain knowledge, commercial acumen, and knowledge of GRC technology solutions complemented the team beautifully."
+</blockquote>
+<div class="mt-6 pt-5 border-t border-slate-800">
+<p class="text-white text-sm font-medium">Tina Gosain</p>
+<p class="text-gray-500 text-xs mt-1">Sr Solutions Engineer, Smartsheet</p>
+<p class="text-gray-600 text-xs mt-1">October 2019 - worked on the same team</p>
+</div>
+</div>
+
+</div>
+
+</section>
+
+
+<footer class="py-24 border-t border-slate-900 text-sm text-gray-600 reveal">
+
+<p>&copy; 2026 Jay Dudson</p>
+
+</footer>
+
+</div>
+
+
+<script>
+
+/* ---------- Icons ---------- */
+
+lucide.createIcons()
+
+/* ---------- Hero entrance stagger ---------- */
+
+document.addEventListener('DOMContentLoaded', () => {
+document.querySelectorAll('.hero-enter').forEach((el, i) => {
+setTimeout(() => el.classList.add('loaded'), 120 + i * 160)
+})
+})
+
+/* ---------- Scroll progress bar ---------- */
+
+const progressBar = document.getElementById('progress-bar')
+function updateProgress(){
+const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)
+progressBar.style.width = (scrolled * 100) + '%'
+}
+window.addEventListener('scroll', updateProgress, {passive:true})
+
+/* ---------- Cursor glow spotlight ---------- */
+
+const cursorGlow = document.getElementById('cursor-glow')
+let glowActive = false
+window.addEventListener('mousemove', e => {
+cursorGlow.style.left = e.clientX + 'px'
+cursorGlow.style.top = e.clientY + 'px'
+if(!glowActive){
+cursorGlow.style.opacity = '1'
+glowActive = true
+}
+}, {passive:true})
+
+/* ---------- Active nav section tracking ---------- */
+
+const navSectionLinks = document.querySelectorAll('.nav-link[data-section]')
+const trackedSections = document.querySelectorAll('section[id]')
+
+const activeObserver = new IntersectionObserver(entries => {
+entries.forEach(entry => {
+if(entry.isIntersecting){
+navSectionLinks.forEach(link => {
+link.classList.toggle('nav-active', link.dataset.section === entry.target.id)
+})
+}
+})
+},{rootMargin:'-25% 0px -65% 0px'})
+
+/* ---------- Scroll reveal ---------- */
+
+const revealObserver = new IntersectionObserver(entries => {
+entries.forEach(entry => {
+if(entry.isIntersecting){
+entry.target.classList.add("active")
+}
+})
+},{threshold:0.1})
+
+document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el))
+
+/* ---------- Staggered bento card entrance ---------- */
+
+const bentoObserver = new IntersectionObserver(entries => {
+entries.forEach(entry => {
+if(entry.isIntersecting){
+const cards = entry.target.querySelectorAll(".bento")
+cards.forEach((card, i) => {
+setTimeout(() => {
+card.style.opacity = "1"
+card.style.transform = "translateY(0)"
+}, i * 65)
+})
+bentoObserver.unobserve(entry.target)
+}
+})
+},{threshold:0.08})
+
+const skillsGrid = document.getElementById("skills-grid")
+if(skillsGrid){
+skillsGrid.querySelectorAll(".bento").forEach(card => {
+card.style.opacity = "0"
+card.style.transform = "translateY(28px)"
+card.style.transition = "opacity .65s cubic-bezier(.16,1,.3,1), transform .65s cubic-bezier(.16,1,.3,1), border-color .35s ease, background .35s ease, box-shadow .35s ease"
+})
+bentoObserver.observe(skillsGrid)
+}
+
+/* ---------- Glow parallax ---------- */
+
+const glow = document.getElementById("glow")
+const glow2 = document.getElementById("glow2")
+
+window.addEventListener("mousemove", e => {
+const x = (e.clientX - window.innerWidth / 2) / 18
+const y = (e.clientY - window.innerHeight / 2) / 18
+glow.style.transform = `translate(${x}px,${y}px)`
+glow2.style.transform = `translate(${-x}px,${-y}px)`
+})
+
+/* ---------- Portrait 3D tilt ---------- */
+
+const portrait = document.getElementById("portrait")
+
+portrait.addEventListener("mousemove", e => {
+const rect = portrait.getBoundingClientRect()
+const x = e.clientX - rect.left
+const y = e.clientY - rect.top
+const rotateY = (x / rect.width - .5) * 20
+const rotateX = (y / rect.height - .5) * -20
+portrait.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`
+})
+
+portrait.addEventListener("mouseleave", () => {
+portrait.style.transform = "rotateX(0) rotateY(0) scale(1)"
+})
+
+trackedSections.forEach(s => activeObserver.observe(s))
+
+</script>
+
+</body>
+</html>
